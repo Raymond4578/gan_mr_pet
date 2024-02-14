@@ -8,7 +8,7 @@ RevGAN has been updated.
 cd bpgan
 ```
 
-If you want to train the model with the original code https://github.com/tychovdo/RevGAN, run the following command.
+If you want to train the model with the [original code](https://github.com/tychovdo/RevGAN), run the following command.
 
 ```
 python3 train.py --epochs 100 -- loss 0 --device 0
