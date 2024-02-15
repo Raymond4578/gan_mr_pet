@@ -2,7 +2,7 @@
 
 ## RevGAN
 
-RevGAN has been updated.
+RevGAN has been updated. Loss 0 for Pix2pix loss, Loss 1 for CycleGAN loss.
 
 ```
 cd bpgan
