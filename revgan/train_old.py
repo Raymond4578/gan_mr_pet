@@ -13,7 +13,7 @@ from utils import get_ssim, get_mae, get_psnr, get_rmse
 from model import RevGAN, PatchGAN
 from load_model import show_2d_slice
 
-# 这个文件是训练RevGAN原代码模型的文件
+# 这个文件是训练RevGAN自己写的代码模型的文件
 
 # Training settings
 parser = argparse.ArgumentParser() # 然后创建一个解析对象
