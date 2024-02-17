@@ -65,7 +65,7 @@ def test(data_test, generator, PET_to_MR, device, orig=False):
 
 random.seed(5441)
 
-device = 0
+device = -1
 loss = 0
 
 dataloader = load_data()
@@ -74,8 +74,12 @@ data_train, data_test = split_data(dataloader, 0.8)
 data_train = get_data_batch(data_train, 1)
 data_test = get_data_batch(data_test, 1)
 
-# generator = torch.load('./model/RevGAN_my_loss_0_seed_5441_2402051529.pt', map_location=f'cuda:{device}')
-generator = torch.load('./model/RevGAN_orig_loss_0_seed_5441_2402021115.pt', map_location=f'cuda:{device}')
+if device == 0 or device == 1:
+    generator = torch.load('./model/RevGAN_my_loss_0_seed_5441_2402051529.pt', map_location=f'cuda:{device}')
+    # generator = torch.load('./model/RevGAN_orig_loss_0_seed_5441_2402021115.pt', map_location=f'cuda:{device}')
+else:
+    generator = torch.load('./model/RevGAN_my_loss_0_seed_5441_2402051529.pt', map_location=f'cpu')
+    # generator = torch.load('./model/RevGAN_orig_loss_0_seed_5441_2402021115.pt', map_location=f'cpu')
 
 print('For MR to PET task:')
 test(data_test, generator, PET_to_MR=False, device=device)

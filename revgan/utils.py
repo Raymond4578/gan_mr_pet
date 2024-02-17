@@ -13,8 +13,11 @@ def get_data_dir():
     Change the code for your data path in the server
     记得改代码（写数据的读取路径）
     '''
-    home_dir = os.path.expanduser('~')
-    data_dir = os.path.join(home_dir, 'gan', 'data')
+    # home_dir = os.path.expanduser('~')
+    # data_dir = os.path.join(home_dir, 'gan', 'data')
+    cwd = os.getcwd()
+    home_dir = os.path.dirname(cwd)
+    data_dir = os.path.join(home_dir, 'data')
     return data_dir
 
 def load_data():
