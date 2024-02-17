@@ -30,8 +30,9 @@ def test(data_test, generator, input_img, device):
         elif input_img == 'pet':  # do PET to MR training
             x = PET_img.clone().detach()
             y = MR_img.clone().detach()
-        # if args.cuda:
-        x = x.cuda(device)
+
+        if device == 0 or device == 1:
+            x = x.cuda(device)
 
         x = normalize_img(x)
         y = normalize_img(y)
@@ -42,8 +43,9 @@ def test(data_test, generator, input_img, device):
         y_hat_ls = predict_through_image_window(windows=windows, generator=generator, nz=8, device=device)
         y_hat = combine_pathces(x, y_hat_ls)
 
-        y = y.cuda(device)
-        y_hat = y_hat.cuda(device)
+        if device == 0 or device == 1:
+            y = y.cuda(device)
+            y_hat = y_hat.cuda(device)
 
         rmse_ls = rmse_ls + get_rmse(y, y_hat)
         mae_ls = mae_ls + get_mae(y, y_hat)
@@ -63,7 +65,7 @@ def test(data_test, generator, input_img, device):
 
 if __name__ == '__main__':
     seed = 5441
-    device = 0
+    device = -1
     batch_size = 1
 
     random.seed(seed)
@@ -81,7 +83,9 @@ if __name__ == '__main__':
     # generator_mr_to_pet = torch.load('./model/BPGAN_input_mr_seed_4446_2401250251.pt', map_location=f'cuda:{device}')
     # generator_mr_to_pet = torch.load('./model/BPGAN_input_mr_seed_4025_2401251607.pt', map_location=f'cuda:{device}')
     # generator_mr_to_pet = torch.load('./model/BPGAN_input_mr_seed_3023_2401260126.pt', map_location=f'cuda:{device}')
-    generator_mr_to_pet = torch.load('./model/BPGAN_orig_input_mr_seed_5441_2402061307.pt', map_location=f'cuda:{device}')
+    # generator_mr_to_pet = torch.load('./model/BPGAN_orig_input_mr_seed_5441_2402061307.pt', map_location=f'cuda:{device}')
+    generator_mr_to_pet = torch.load('./model/BPGAN_orig_input_mr_seed_5441_2402061307.pt',
+                                     map_location=f'cpu')
     print('For MR to PET task:')
     test(data_test, generator_mr_to_pet, input_img='mr', device=device)
 
@@ -90,6 +94,8 @@ if __name__ == '__main__':
     # generator_pet_to_mr = torch.load('./model/BPGAN_input_pet_seed_4446_2401250540.pt', map_location=f'cuda:{device}')
     # generator_pet_to_mr = torch.load('./model/BPGAN_input_pet_seed_4025_2401251858.pt', map_location=f'cuda:{device}')
     # generator_pet_to_mr = torch.load('./model/BPGAN_input_pet_seed_3023_2401260417.pt', map_location=f'cuda:{device}')
-    generator_pet_to_mr = torch.load('./model/BPGAN_orig_input_pet_seed_5441_2402040835.pt', map_location=f'cuda:{device}')
+    # generator_pet_to_mr = torch.load('./model/BPGAN_orig_input_pet_seed_5441_2402040835.pt', map_location=f'cuda:{device}')
+    generator_pet_to_mr = torch.load('./model/BPGAN_orig_input_pet_seed_5441_2402040835.pt',
+                                     map_location=f'cpu')
     print('For PET to MR task:')
     test(data_test, generator_pet_to_mr, input_img='pet', device=device)

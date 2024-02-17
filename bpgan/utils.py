@@ -13,8 +13,11 @@ def get_data_dir():
     Change the code for your data path in the server
     记得改代码（写数据的读取路径）
     '''
-    home_dir = os.path.expanduser('~')
-    data_dir = os.path.join(home_dir, 'gan', 'data')
+    # home_dir = os.path.expanduser('~')
+    # data_dir = os.path.join(home_dir, 'gan', 'data')
+    cwd = os.getcwd()
+    home_dir = os.path.dirname(cwd)
+    data_dir = os.path.join(home_dir, 'data')
     return data_dir
 
 def load_data():
@@ -145,9 +148,12 @@ def predict_through_image_window(windows, generator, nz, device):
 
     for j, window in enumerate(windows):
         x_window, idx = window
-        x_window = x_window.cuda(device)
+        if device == 0 or device == 1:
+            x_window = x_window.to(f'cuda:{device}')
 
-        Nz = get_random_sample(x_window.size(0), nz=nz).cuda(device)
+        Nz = get_random_sample(x_window.size(0), nz=nz)
+        if device == 0 or device == 1:
+            Nz = Nz.to(f'cuda:{device}')
 
         with torch.no_grad():
             y_hat_for_combine = generator(x_window, Nz)
