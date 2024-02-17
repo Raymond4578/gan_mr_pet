@@ -30,8 +30,9 @@ def test(data_test, generator, input_img, device):
             x = PET_img.clone().detach()
             y = MR_img.clone().detach()
 
-        x = x.to(f'cuda:{device}')
-        y = y.to(f'cuda:{device}')
+        if device == 0 or device == 1:
+            x = x.to(f'cuda:{device}')
+            y = y.to(f'cuda:{device}')
 
         x = normalize_img(x)
         y = normalize_img(y)
@@ -41,8 +42,9 @@ def test(data_test, generator, input_img, device):
         y_hat_ls = predict_through_image_window(windows=x_windows, generator=generator, device=device)
         y_hat = combine_pathces(x, y_hat_ls)
 
-        y = y.cuda(device)
-        y_hat = y_hat.to(f'cuda:{device}')
+        if device == 0 or device == 1:
+            y = y.cuda(device)
+            y_hat = y_hat.to(f'cuda:{device}')
 
         rmse_ls = rmse_ls + get_rmse(y, y_hat)
         mae_ls = mae_ls + get_mae(y, y_hat)
@@ -64,7 +66,7 @@ def test(data_test, generator, input_img, device):
 if __name__ == '__main__':
     seed = 5441
     batch_size = 1
-    device = 1
+    device = -1
 
     random.seed(seed)
 
@@ -74,10 +76,14 @@ if __name__ == '__main__':
     data_train = get_data_batch(data_train, batch_size)
     data_test = get_data_batch(data_test, batch_size * 1)
 
-    generator_mr_to_pet = torch.load('./model/UNet3d_new_input_mr_seed_5441_2401302259.pt', map_location=f'cuda:{device}')
+    # generator_mr_to_pet = torch.load('./model/UNet3d_orig_input_mr_seed_5441_2401302259.pt', map_location=f'cuda:{device}')
+    generator_mr_to_pet = torch.load('./model/UNet3d_orig_input_mr_seed_5441_2401302259.pt',
+                                     map_location=f'cpu')
     print('For MR to PET task:')
     test(data_test, generator_mr_to_pet, input_img='mr', device=device)
 
-    generator_pet_to_mr = torch.load('./model/UNet3d_new_input_pet_seed_5441_2401301916.pt', map_location=f'cuda:{device}')
+    # generator_pet_to_mr = torch.load('./model/UNet3d_orig_input_pet_seed_5441_2401301916.pt', map_location=f'cuda:{device}')
+    generator_pet_to_mr = torch.load('./model/UNet3d_orig_input_pet_seed_5441_2401301916.pt',
+                                     map_location=f'cpu')
     print('For PET to MR task:')
     test(data_test, generator_pet_to_mr, input_img='pet', device=device)
